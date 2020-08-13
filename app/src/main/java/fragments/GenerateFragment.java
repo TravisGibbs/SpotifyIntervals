@@ -1,11 +1,13 @@
 package fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +30,7 @@ import java.util.HashMap;
 
 import activities.SearchActivity;
 import models.SongFull;
+import models.SongsViewModel;
 import models.constants;
 import models.objectID;
 import services.PlaylistService;
@@ -74,6 +77,13 @@ public class GenerateFragment extends Fragment {
     private SongService songService1;
     private SongService songService2;
     private PlaylistService playlistService;
+    private SongsViewModel viewModel;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        viewModel = ViewModelProviders.of(this.getActivity()).get(SongsViewModel.class);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -270,6 +280,8 @@ public class GenerateFragment extends Fragment {
             }
         }
         playlistService.addPlaylist("title placeholder", songsToPost);
+        viewModel.setSongList(songsToPost);
+        viewModel.setPlaylistService(playlistService);
     }
 
     @Override

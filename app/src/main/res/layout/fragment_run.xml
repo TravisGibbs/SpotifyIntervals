@@ -1,13 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/playlistLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="fragments.RunFragment">
+    android:animateLayoutChanges="true"
+    android:background="@drawable/background">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ProgressBar
+        android:id="@+id/progressBarSong"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/SongText"
+        android:layout_alignStart="@+id/SongText"
+        android:layout_alignEnd="@+id/SongText"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="0"
+        android:progressTint="@color/colorAccent"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSongs"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="RUN" />
+        android:layout_above="@id/progressBarSong"
+        android:layout_below="@+id/errorText"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/background" />
+
+    <TextView
+        android:id="@+id/errorText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="150dp"
+        android:background="@drawable/background"
+        android:text="Please generate a playlist!"
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/playButton"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_below="@+id/rvSongs"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|right"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="25dp"
+        android:contentDescription="playButton"
+        android:src="@drawable/play_button"
+        android:visibility="gone"
+        app:backgroundTint="@color/colorPrimary"
+        app:rippleColor="@color/darkGrey"
+        app:tint="@color/white"
+        tools:visibility="visible" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/SongText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toStartOf="@+id/playButton"
+        android:background="@drawable/shape_round_rec"
+        android:backgroundTintMode="add"
+        android:bottomLeftRadius="100dp"
+        android:bottomRightRadius="100dp"
+        android:padding="5dp"
+        android:paddingLeft="5dp"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:visibility="gone"
+        tools:text="example text"
+        tools:visibility="visible" />
 
 </RelativeLayout>
