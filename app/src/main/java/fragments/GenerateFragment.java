@@ -1,6 +1,8 @@
 package fragments;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,6 +30,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import activities.SearchActivity;
@@ -35,11 +38,14 @@ import models.constants;
 import models.objectID;
 import services.PlaylistService;
 import services.SongService;
+import services.UserService;
 
 public class GenerateFragment extends Fragment {
 
+    private static final String TAG = "Generate";
     HashMap<String, objectID> nameIdMap = new HashMap<String, objectID>();
     private String radioButtonSelected = "";
+    private int count = 0;
     private ChipGroup searchResults;
     private Chip chip0;
     private Chip chip1;
@@ -60,6 +66,8 @@ public class GenerateFragment extends Fragment {
     private Slider sliderDanceRelax;
     private Slider sliderEnergyRelax;
     private Slider sliderValenceRelax;
+    private ArrayList<String> customIdArtists = new ArrayList<>();
+    private ArrayList<String> customIdSongs = new ArrayList<>();
     private RelativeLayout relativeLayout;
     private SongService songService1;
     private SongService songService2;
@@ -195,10 +203,69 @@ public class GenerateFragment extends Fragment {
     }
 
     private void getTracks() {
+        int minutesIntense;
+        int minutesRelaxed;
         if (radioTempo.isActivated()) {
-
+            minutesIntense = Math.round(sliderSets.getValue() * 10);
+            minutesRelaxed = Math.round(sliderSets.getValue() * 5);
         } else {
-
+            minutesIntense = Math.round(sliderSets.getValue() * 7);
+            minutesRelaxed = Math.round(sliderSets.getValue() * 3);
         }
+        int songsIntense = (int) Math.round(minutesIntense / 3.5);
+        int songsRelaxed = (int) Math.round(minutesRelaxed / 3.5);
+        for (objectID objectID : nameIdMap.values()) {
+            if (objectID.isSong()) {
+                customIdSongs.add(objectID.getId());
+            } else {
+                customIdArtists.add(objectID.getId());
+            }
+        }
+        if (nameIdMap.size() * 100 < songsIntense || nameIdMap.size() * 100 < songsRelaxed) {
+            Float danceValueIntense = sliderDanceIntense.getValue();
+            Float energyValueIntense = sliderEnergyIntense.getValue();
+            Float valenceValueIntense = sliderValenceIntense.getValue();
+            Float danceValueRelax = sliderDanceRelax.getValue();
+            Float energyValueRelax = sliderEnergyRelax.getValue();
+            Float valenceValueRelax = sliderValenceRelax.getValue();
+            songService1.getSeedTracks(customIdSongs, customIdArtists, songsIntense, danceValueIntense, energyValueIntense, valenceValueIntense, new SongService.songServiceCallback() {
+                @Override
+                public void onSearchFinish(boolean found) {
+                    if (found && count != 0) {
+                        startButtonSwap(goToPlaylistButton, makePlaylistButton);
+                    } else if (found) {
+                        count++;
+                    } else {
+                        Log.i(TAG, "search failed");
+                    }
+                }
+            });
+            songService2.getSeedTracks(customIdSongs, customIdArtists, songsIntense, danceValueRelax, energyValueRelax, valenceValueRelax,
+            new SongService.songServiceCallback() {
+                @Override
+                public void onSearchFinish(boolean found) {
+                    if (found && count != 0) {
+                        startButtonSwap(goToPlaylistButton, makePlaylistButton);
+                    } else if (found) {
+                        count++;
+                    } else {
+                        Log.i(TAG, "Search Failed");
+                    }
+                }
+            });
+        }
+    }
+
+    private void startButtonSwap(Button goUpButton, Button goRightButton) {
+        ObjectAnimator animationButtonUp = ObjectAnimator.ofFloat(goUpButton, "translationY", -170f);
+        animationButtonUp.setDuration(2000);
+        moveButtonOffScreenRight(goRightButton);
+        animationButtonUp.start();
+    }
+
+    private void moveButtonOffScreenRight(Button button) {
+        ObjectAnimator animationButtonRight = ObjectAnimator.ofFloat(button, "translationX", 1800f);
+        animationButtonRight.setDuration(1500);
+        animationButtonRight.start();
     }
 }

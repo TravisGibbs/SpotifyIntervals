@@ -212,8 +212,7 @@ public class SongService {
     return ids;
   }
 
-  public ArrayList<SongFull> getSeedTracks(UserService.VolleyCallBack callBack,
-                                           ArrayList<String> customIdSongs,
+  public ArrayList<SongFull> getSeedTracks(ArrayList<String> customIdSongs,
                                            ArrayList<String> customIdArtists,
                                            int amount, Float danceVals,
                                            Float energyVals, Float valenceVals, songServiceCallback serviceCallback) {
