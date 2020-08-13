@@ -1,13 +1,341 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="fragments.GenerateFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="GENERATE" />
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+            <Button
+                android:id="@+id/searchButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="40dp"
+                android:background="@color/colorAccent"
+                android:padding="10dp"
+                android:text="Search for a song or artist"
+                android:textColor="@color/cardview_light_background" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/searchObjects"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/searchButton"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    app:chipBackgroundColor="@color/colorPrimary"
+                    app:closeIconTint="@color/colorPrimaryDark"
+                    app:closeIconVisible="true" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    app:chipBackgroundColor="@color/colorPrimary"
+                    app:closeIconTint="@color/colorPrimaryDark"
+                    app:closeIconVisible="true" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    app:chipBackgroundColor="@color/colorPrimary"
+                    app:closeIconTint="@color/colorPrimaryDark"
+                    app:closeIconVisible="true" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    app:chipBackgroundColor="@color/colorPrimary"
+                    app:closeIconTint="@color/colorPrimaryDark"
+                    app:closeIconVisible="true" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    app:chipBackgroundColor="@color/colorPrimary"
+                    app:closeIconTint="@color/colorPrimaryDark"
+                    app:closeIconVisible="true" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/searchObjects"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="0dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <RadioButton
+                    android:id="@+id/radioAlternate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Walk 3 - Run 5 - Sprint 3"
+                    android:textColor="@color/darkGrey"
+                    android:textSize="24sp" />
+
+                <RadioButton
+                    android:id="@+id/radioTempo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Walk 3 - Run 5 (moderate) - Run 5 (tempo) - Jog 2"
+                    android:textColor="@color/darkGrey"
+                    android:textSize="24sp" />
+            </RadioGroup>
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/setSlider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/radioGroup"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="5dp"
+                android:stepSize="1.0"
+                android:valueFrom="0.0"
+                android:valueTo="10.0" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/danceSliderIntense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView3"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="0dp"
+                android:stepSize="0.1"
+                android:valueFrom="0.0"
+                android:valueTo="1.0" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/energySliderIntense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/danceSliderIntense"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="5dp"
+                android:contentDescription="Energy Bar"
+                android:stepSize="0.1"
+                android:valueFrom="0.0"
+                android:valueTo="1.0" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/valenceSliderIntense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/energySliderIntense"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="5dp"
+                android:stepSize="0.1"
+                android:valueFrom="0.0"
+                android:valueTo="1.0" />
+
+            <TextView
+                android:id="@+id/setLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/setSlider"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-15dp"
+                android:text="# of sets"
+                android:textAlignment="center"
+                android:textColor="@color/darkGrey" />
+
+            <TextView
+                android:id="@+id/valenceLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/valenceSliderIntense"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-15dp"
+                android:text="set valence"
+                android:textAlignment="center"
+                android:textColor="@color/darkGrey" />
+
+            <TextView
+                android:id="@+id/energyLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/energySliderIntense"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-15dp"
+                android:text="set energy"
+                android:textAlignment="center"
+                android:textColor="@color/darkGrey" />
+
+            <TextView
+                android:id="@+id/danceLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/danceSliderIntense"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-15dp"
+                android:text="set danceability"
+                android:textAlignment="center"
+                android:textColor="@color/darkGrey" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/dividerSets"
+                android:layout_marginTop="0dp"
+                android:text="settings for running portions"
+                android:textAlignment="center"
+                android:textSize="24sp" />
+
+            <ImageView
+                android:id="@+id/dividerSets"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_below="@id/setLabel"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/shape_divider" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/dividerIntense"
+                android:layout_marginTop="0dp"
+                android:text="settings for walking portions"
+                android:textAlignment="center"
+                android:textSize="24sp" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/danceSliderRelax"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView4"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="0dp"
+                android:stepSize="0.1"
+                android:valueFrom="0.0"
+                android:valueTo="1.0" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/energySliderRelax"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/danceSliderRelax"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="5dp"
+                android:contentDescription="Energy Bar"
+                android:stepSize="0.1"
+                android:valueFrom="0.0"
+                android:valueTo="1.0" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/valenceSliderRelax"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/energySliderRelax"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="5dp"
+                android:stepSize="0.1"
+                android:valueFrom="0.0"
+                android:valueTo="1.0" />
+
+            <TextView
+                android:id="@+id/valenceLabel2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/valenceSliderRelax"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-15dp"
+                android:text="set valence"
+                android:textAlignment="center"
+                android:textColor="@color/darkGrey" />
+
+            <TextView
+                android:id="@+id/energyLabel2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/energySliderRelax"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-15dp"
+                android:text="set energy"
+                android:textAlignment="center"
+                android:textColor="@color/darkGrey" />
+
+            <TextView
+                android:id="@+id/danceLabel2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/danceSliderRelax"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-15dp"
+                android:text="set danceability"
+                android:textAlignment="center"
+                android:textColor="@color/darkGrey" />
+
+            <ImageView
+                android:id="@+id/dividerIntense"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_below="@id/valenceLabel"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="30dp"
+                android:src="@drawable/shape_divider" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_below="@id/valenceSliderRelax"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="40dp"
+                android:background="@color/colorAccent"
+                android:padding="10dp"
+                android:text="Generate Playlist" />
+        </RelativeLayout>
+    </ScrollView>
+
+
+
 
 </RelativeLayout>
