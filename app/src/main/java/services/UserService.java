@@ -56,6 +56,7 @@ public class UserService {
 
   public interface VolleyCallBack {
     void onUserSearchFinish(boolean foundUser);
-  }
 
+    void onSuccess();
+  }
 }
