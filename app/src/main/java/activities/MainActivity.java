@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        bottomNavigationView.setSelectedItemId(R.id.generateAction);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

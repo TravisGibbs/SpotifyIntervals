@@ -75,7 +75,7 @@ public class SongService {
                   e.printStackTrace();
                 }
               }
-              getTracks(songSimplifieds, callBack);
+              getTracks(songSimplifieds);
               callBack.onSuccess();
             }, error -> {
               // TODO: Handle error
@@ -93,7 +93,7 @@ public class SongService {
     return songFulls;
   }
 
-  public void getTracks(List<SongSimplified> songSimplifieds, UserService.VolleyCallBack callBack) {
+  public void getTracks(List<SongSimplified> songSimplifieds) {
     String url = getURLforTracks(songSimplifieds);
     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
             (Request.Method.GET, url, null, response -> {
@@ -109,13 +109,12 @@ public class SongService {
                   JSONObject object = jsonArray.getJSONObject(n);
                   SongFull songFull = gson.fromJson(object.toString(), SongFull.class);
                   int position = n + offset; // The offset allows for get tracks to be called in two separate calls because the limit of the API is 50 while our tracks are up too 100
-                  songFulls.add(getTrackDetails(songFull, position, callBack));
+                  songFulls.add(getTrackDetails(songFull, position));
                 } catch (JSONException e) {
                   e.printStackTrace();
                 }
               }
               offset += jsonArray.length();
-              callBack.onSuccess();
             }, error -> {
               // TODO: Handle error
             }) {
@@ -131,7 +130,7 @@ public class SongService {
     queue.add(jsonObjectRequest);
   }
 
-  public SongFull getTrackDetails(SongFull songFull, int position, UserService.VolleyCallBack callBack) {
+  public SongFull getTrackDetails(SongFull songFull, int position) {
     String url = getURLforTrackDetails(songFull);
     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
             (Request.Method.GET, url, null, response -> {
@@ -141,7 +140,6 @@ public class SongService {
                 songFull.setLoudness(BigDecimal.valueOf(response.getDouble("loudness")).floatValue());
                 songFull.setTempo(BigDecimal.valueOf(response.getDouble("tempo")).floatValue());
                 songFulls.set(position, songFull);
-                callBack.onSuccess();
               } catch (JSONException e) {
                 e.printStackTrace();
               }
@@ -235,13 +233,13 @@ public class SongService {
               if (songSimplifieds.size() > 50) {
                 getTracks(
                         songSimplifieds.subList(
-                                0, songSimplifieds.size() / 2), callBack);
+                                0, songSimplifieds.size() / 2));
                 getTracks(
                         songSimplifieds.subList(
-                                songSimplifieds.size() / 2, songSimplifieds.size()), callBack);
+                                songSimplifieds.size() / 2, songSimplifieds.size()));
 
               } else {
-                getTracks(songSimplifieds, callBack);
+                getTracks(songSimplifieds);
               }
               tempCheck.addAll(songSimplifieds);
               if (songSimplifieds.size() > 0) {
@@ -249,7 +247,6 @@ public class SongService {
               } else {
                 serviceCallback.onSearchFinish(false);
               }
-              callBack.onSuccess();
             }, error -> {
               // TODO: Handle error
             }) {

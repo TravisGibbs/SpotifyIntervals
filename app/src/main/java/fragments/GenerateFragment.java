@@ -2,7 +2,6 @@ package fragments;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,17 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.example.spotifyintervals.R;
-import com.google.android.gms.common.api.Status;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.slider.Slider;
@@ -34,11 +27,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import activities.SearchActivity;
+import models.SongFull;
 import models.constants;
 import models.objectID;
 import services.PlaylistService;
 import services.SongService;
-import services.UserService;
 
 public class GenerateFragment extends Fragment {
 
@@ -52,8 +45,8 @@ public class GenerateFragment extends Fragment {
     private Chip chip2;
     private Chip chip3;
     private Chip chip4;
-    private Button goToPlaylistButton;
     private Button makePlaylistButton;
+    private Button generateButton;
     private Button getSongsButton;
     private Button searchButton;
     private RadioGroup radioGroup;
@@ -89,7 +82,8 @@ public class GenerateFragment extends Fragment {
         chip2 = view.findViewById(R.id.chip2);
         chip3 = view.findViewById(R.id.chip3);
         chip4 = view.findViewById(R.id.chip4);
-        makePlaylistButton = view.findViewById(R.id.button);
+        generateButton = view.findViewById(R.id.generateButton);
+        makePlaylistButton = view.findViewById(R.id.makePlaylistButton);
         searchButton = view.findViewById(R.id.searchButton);
         radio352 = view.findViewById(R.id.radioAlternate);
         radioTempo = view.findViewById(R.id.radioTempo);
@@ -116,10 +110,17 @@ public class GenerateFragment extends Fragment {
             }
         });
 
-        makePlaylistButton.setOnClickListener(new View.OnClickListener() {
+        generateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getTracks();
+            }
+        });
+
+        makePlaylistButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                postPlaylist();
             }
         });
 
@@ -157,6 +158,54 @@ public class GenerateFragment extends Fragment {
                 chipListenerResponse(chip4);
             }
         });
+    }
+
+    private void postPlaylist() {
+        ArrayList<SongFull> songsToPost = new ArrayList<>();
+        ArrayList<SongFull> songsIntense = new ArrayList<>();
+        ArrayList<SongFull> songsRelaxed = new ArrayList<>();
+        songsIntense = songService1.getSongFulls();
+        songsRelaxed = songService2.getSongFulls();
+        // tempo: 3 5 5 2
+        // basic 3 5 2
+        if (radioTempo.isActivated()) {
+            for (int i = 0; i < Math.round(sliderSets.getValue()); i++) {
+                int j = 180000;
+                while (j > 0) {
+                    songsToPost.add(songsRelaxed.get(0));
+                    j = j - songsRelaxed.get(0).getDuration_ms();
+                    songsRelaxed.remove(0);
+                }
+                j = 600000;
+                while (j > 0) {
+                    songsToPost.add(songsIntense.get(0));
+                    j = j - songsIntense.get(0).getDuration_ms();
+                    songsIntense.remove(0);
+                }
+                j = 120000;
+                while (j > 0) {
+                    songsToPost.add(songsRelaxed.get(0));
+                    j = j - songsRelaxed.get(0).getDuration_ms();
+                    songsRelaxed.remove(0);
+                }
+            }
+        } else {
+            for (int i = 0; i < Math.round(sliderSets.getValue()); i++) {
+                int j = 180000;
+                while (j > 0) {
+                    songsToPost.add(songsRelaxed.get(0));
+                    j = j - songsRelaxed.get(0).getDuration_ms();
+                    songsRelaxed.remove(0);
+                }
+                j = 420000;
+                while (j > 0) {
+                    songsToPost.add(songsIntense.get(0));
+                    j = j - songsIntense.get(0).getDuration_ms();
+                    songsIntense.remove(0);
+                }
+            }
+        }
+        playlistService.addPlaylist("title placeholder", songsToPost);
     }
 
     @Override
@@ -206,14 +255,14 @@ public class GenerateFragment extends Fragment {
         int minutesIntense;
         int minutesRelaxed;
         if (radioTempo.isActivated()) {
-            minutesIntense = Math.round(sliderSets.getValue() * 10);
-            minutesRelaxed = Math.round(sliderSets.getValue() * 5);
+            minutesIntense = Math.round(sliderSets.getValue() * 15);
+            minutesRelaxed = Math.round(sliderSets.getValue() * 8);
         } else {
-            minutesIntense = Math.round(sliderSets.getValue() * 7);
-            minutesRelaxed = Math.round(sliderSets.getValue() * 3);
+            minutesIntense = Math.round(sliderSets.getValue() * 11);
+            minutesRelaxed = Math.round(sliderSets.getValue() * 6);
         }
-        int songsIntense = (int) Math.round(minutesIntense / 3.5);
-        int songsRelaxed = (int) Math.round(minutesRelaxed / 3.5);
+        int songsIntense = minutesIntense / 3;
+        int songsRelaxed = minutesRelaxed / 3;
         for (objectID objectID : nameIdMap.values()) {
             if (objectID.isSong()) {
                 customIdSongs.add(objectID.getId());
@@ -221,7 +270,7 @@ public class GenerateFragment extends Fragment {
                 customIdArtists.add(objectID.getId());
             }
         }
-        if (nameIdMap.size() * 100 < songsIntense || nameIdMap.size() * 100 < songsRelaxed) {
+        if (nameIdMap.size() * 100 > songsIntense || nameIdMap.size() * 100 > songsRelaxed) {
             Float danceValueIntense = sliderDanceIntense.getValue();
             Float energyValueIntense = sliderEnergyIntense.getValue();
             Float valenceValueIntense = sliderValenceIntense.getValue();
@@ -232,7 +281,7 @@ public class GenerateFragment extends Fragment {
                 @Override
                 public void onSearchFinish(boolean found) {
                     if (found && count != 0) {
-                        startButtonSwap(goToPlaylistButton, makePlaylistButton);
+                        startButtonSwap(makePlaylistButton, generateButton);
                     } else if (found) {
                         count++;
                     } else {
@@ -245,7 +294,7 @@ public class GenerateFragment extends Fragment {
                 @Override
                 public void onSearchFinish(boolean found) {
                     if (found && count != 0) {
-                        startButtonSwap(goToPlaylistButton, makePlaylistButton);
+                        startButtonSwap(makePlaylistButton, generateButton);
                     } else if (found) {
                         count++;
                     } else {
@@ -256,16 +305,8 @@ public class GenerateFragment extends Fragment {
         }
     }
 
-    private void startButtonSwap(Button goUpButton, Button goRightButton) {
-        ObjectAnimator animationButtonUp = ObjectAnimator.ofFloat(goUpButton, "translationY", -170f);
-        animationButtonUp.setDuration(2000);
-        moveButtonOffScreenRight(goRightButton);
-        animationButtonUp.start();
-    }
-
-    private void moveButtonOffScreenRight(Button button) {
-        ObjectAnimator animationButtonRight = ObjectAnimator.ofFloat(button, "translationX", 1800f);
-        animationButtonRight.setDuration(1500);
-        animationButtonRight.start();
+    private void startButtonSwap(Button appearButton, Button goneButton) {
+        appearButton.setVisibility(View.VISIBLE);
+        goneButton.setVisibility(View.GONE);
     }
 }

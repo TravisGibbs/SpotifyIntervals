@@ -49,11 +49,10 @@ public class PlaylistService {
     this.relativeLayout = relativeLayout;
   }
 
-  public void addPlaylist(String playlistTitle, ArrayList<SongFull> songSimplifieds,
-                          int time, Place origin, Place destination) {
+  public void addPlaylist(String playlistTitle, ArrayList<SongFull> songSimplifieds) {
     JSONObject payload = preparePutPayloadPlaylistPost(playlistTitle);
     JsonObjectRequest jsonObjectRequest =
-            playlistPost(payload, songSimplifieds, time, origin, destination);
+            playlistPost(payload, songSimplifieds);
     queue.add(jsonObjectRequest);
   }
 
@@ -89,11 +88,10 @@ public class PlaylistService {
     return playlist;
   }
 
-  private JsonObjectRequest playlistPost(JSONObject payload, ArrayList<SongFull> songSimplifieds,
-                                         int time, Place origin, Place destination) {
+  private JsonObjectRequest playlistPost(JSONObject payload, ArrayList<SongFull> songSimplifieds) {
     return new JsonObjectRequest(Request.Method.POST, getPostPlaylistURL(), payload, response -> {
       try {
-        onSuccPlaylist(response, songSimplifieds, time, origin, destination);
+        onSuccPlaylist(response, songSimplifieds);
       } catch (JSONException e) {
         e.printStackTrace();
       }
@@ -151,21 +149,12 @@ public class PlaylistService {
     Log.i(Tag, "song posted");
   }
 
-  public void onSuccPlaylist(JSONObject response, ArrayList<SongFull> songSimplifieds,
-                             int time, Place origin, Place destination) throws JSONException {
+  public void onSuccPlaylist(JSONObject response, ArrayList<SongFull> songSimplifieds) throws JSONException {
     playlistID = response.getString("id");
     JSONObject external_urls = response.getJSONObject("external_urls");
     playlistExternalLink = external_urls.getString("spotify");
     playlistURI = response.getString("uri");
-    ArrayList<SongFull> newSongFull = new ArrayList<>();
-    int i = 0;
-    int sum = 0;
-    while (sum < time && i < songSimplifieds.size()) {
-      newSongFull.add(songSimplifieds.get(i));
-      sum += songSimplifieds.get(i).getDuration_ms();
-      i++;
-    }
-    addSong(newSongFull);
+    addSong(songSimplifieds);
   }
 
 

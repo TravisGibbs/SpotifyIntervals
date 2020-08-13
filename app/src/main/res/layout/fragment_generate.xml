@@ -13,6 +13,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
+
             <Button
                 android:id="@+id/searchButton"
                 android:layout_width="match_parent"
@@ -99,7 +100,7 @@
                 android:layout_below="@id/searchObjects"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="0dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:visibility="visible">
 
                 <RadioButton
@@ -318,10 +319,10 @@
                 android:src="@drawable/shape_divider" />
 
             <Button
-                android:id="@+id/button"
-                android:layout_below="@id/valenceSliderRelax"
+                android:id="@+id/generateButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/valenceSliderRelax"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_centerHorizontal="true"
@@ -332,6 +333,20 @@
                 android:background="@color/colorAccent"
                 android:padding="10dp"
                 android:text="Generate Playlist" />
+
+            <Button
+                android:id="@+id/makePlaylistButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="-150dp"
+                android:background="@color/colorAccent"
+                android:padding="10dp"
+                android:text="Post Playlist"
+                android:visibility="gone" />
         </RelativeLayout>
     </ScrollView>
 

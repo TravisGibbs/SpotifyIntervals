@@ -50,8 +50,7 @@ public class SplashActivity extends AppCompatActivity {
                 new AuthenticationRequest.Builder(constants.spotifyClientId,
                         AuthenticationResponse.Type.TOKEN,
                         constants.spotifyRedirectLink);
-
-        builder.setScopes(new String[]{"streaming"});
+        builder.setScopes(new String[]{SCOPES});
         AuthenticationRequest request = builder.build();
 
         AuthenticationClient.openLoginActivity(this, constants.REQUEST_CODE, request);
@@ -82,7 +81,6 @@ public class SplashActivity extends AppCompatActivity {
 
                 // Most likely auth flow was cancelled
                 default:
-                    authenticate();
                     break;
                     // Handle other cases
             }
