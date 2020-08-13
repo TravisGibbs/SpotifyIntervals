@@ -107,6 +107,11 @@ public class SplashActivity extends AppCompatActivity {
                     Log.i(TAG, "Error finding user");
                 }
             }
+
+            @Override
+            public void onSuccess() {
+
+            }
         });
     }
 
