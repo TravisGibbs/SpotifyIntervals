@@ -71,7 +71,7 @@ public class SplashActivity extends AppCompatActivity {
                     editor.putString("token", response.getAccessToken());
                     Log.d("STARTING", "GOT AUTH TOKEN");
                     editor.apply();
-                    pb.setVisibility(View.GONE);
+                    pb.setVisibility(View.INVISIBLE);
                     waitForUserInfo();
                     break;
 
