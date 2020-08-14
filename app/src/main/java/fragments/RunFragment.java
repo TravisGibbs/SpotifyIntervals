@@ -1,13 +1,17 @@
 package fragments;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +33,9 @@ import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.types.Track;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import adapters.PlaylistAdapter;
 import models.SongFull;
@@ -59,10 +66,6 @@ public class RunFragment extends Fragment {
     private Long songLength;
     private int songProgress;
     private View view;
-    private Button saveDataButton;
-    private Button finishDriveButton;
-    private Button goToGraphButton;
-    private EditText editText;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -72,9 +75,84 @@ public class RunFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_run, container, false);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        audioManager = (AudioManager) view.getContext().getSystemService(Context.AUDIO_SERVICE);
+        sharedPreferences = view.getContext().getSharedPreferences("SPOTIFY", 0);
+        int maxLevel = sharedPreferences.getInt("maxVolume", audioManager.getStreamMinVolume(AudioManager.STREAM_MUSIC));
+        int minLevel = sharedPreferences.getInt("minVolume", audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, minLevel + (maxLevel - minLevel) / 2, 0);
+        relativeLayout = view.findViewById(R.id.playlistLayout);
+        trackName = "";
+        errorText = view.findViewById(R.id.errorText);
+        trackText = view.findViewById(R.id.SongText);
+        progressBar = view.findViewById(R.id.progressBarSong);
+        rvPlaylist = view.findViewById(R.id.rvSongs);
+        viewModel = ViewModelProviders.of(this.getActivity()).get(SongsViewModel.class);
+        floatingActionButton = view.findViewById(R.id.playButton);
+        try {
+            allSongs = viewModel.getSongList();
+            playlistURI = viewModel.getPlaylistService().getPlaylistURI();
+        } catch (Exception e) {
+            Log.i(TAG, "View model empty");
+        }
+        if (allSongs.size() > 0) {
+            setUpSpotifyRemote(view);
+            trackText.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+            linearLayoutManager = new LinearLayoutManager(view.getContext());
+            playlistAdapter = new PlaylistAdapter(allSongs, view.getContext());
+            rvPlaylist.setAdapter(playlistAdapter);
+            rvPlaylist.setLayoutManager(linearLayoutManager);
+            playlistAdapter.notifyDataSetChanged();
+            floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    playOrPause();
+                }
+            });
+        }
+        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+        exec.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                if (playing) {
+                    updateProgressbar();
+                }
+            }
+        }, 0, 2, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (floatingActionButton != null) {
+            floatingActionButton.setVisibility(View.GONE);
+        }
+        if (mSpotifyAppRemote != null) {
+            mSpotifyAppRemote.getPlayerApi().pause();
+            SpotifyAppRemote.disconnect(mSpotifyAppRemote);
+        }
+        playing = false;
+    }
+
+    private void updateProgressbar() {
+        songProgress += 2000; // every 2 seconds this thread is triggered so 2000 ms are added to progress
+        progressBar.setProgress(songProgress);
+    }
+
+    private void playOrPause() {
+        if (playing) {
+            mSpotifyAppRemote.getPlayerApi().pause();
+            floatingActionButton.setImageResource(R.drawable.play_button);
+            playing = false;
+        } else {
+            mSpotifyAppRemote.getPlayerApi().resume();
+            floatingActionButton.setImageResource(R.drawable.pause_icon);
+            playing = true;
+        }
     }
 
     private void setUpSpotifyRemote(View view) {
